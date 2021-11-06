@@ -11,4 +11,6 @@ public interface UserRespository {
     Integer getCountByEmail(String email);
 
     User findUser(Integer userId);
+    User findUserByEmailAndPassword (String email , String password);
+
 }

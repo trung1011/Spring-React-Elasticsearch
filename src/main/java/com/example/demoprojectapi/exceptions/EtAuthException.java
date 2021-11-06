@@ -8,5 +8,7 @@ public class EtAuthException extends  RuntimeException {
 
     public EtAuthException (String message){
         super(message);
+        System.out.println(message);
+
     }
 }

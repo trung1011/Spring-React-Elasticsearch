@@ -33,4 +33,15 @@ public class UserResource {
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     };
+
+    @PostMapping("/login")
+    public ResponseEntity<Map <String, String>> login (@RequestBody Map<String, Object> userMap){
+        String email =(String) userMap.get("email");
+        String password = (String) userMap.get("password");
+        User user = userServices.validateUser(email, password);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "login successfully");
+        return new ResponseEntity<>(map, HttpStatus.OK);
+
+    }
 }

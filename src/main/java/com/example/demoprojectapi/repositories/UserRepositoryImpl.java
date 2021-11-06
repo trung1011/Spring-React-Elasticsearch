@@ -3,6 +3,7 @@ package com.example.demoprojectapi.repositories;
 import com.example.demoprojectapi.exceptions.EtAuthException;
 import com.example.demoprojectapi.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,7 +19,7 @@ public class UserRepositoryImpl implements  UserRespository{
     private  static  String SQL_CREATE ="Insert into users(id,first_name , last_name, email, password) values (nextval('users_seq') , ? ,?,? , ?)";
     private  static  String SQL_COUNT_BY_EMAIL="Select Count(*) from users where email=?";
     private  static  String SQL_FIND_BY_ID="select id, first_name,last_name,email, password From users where id = ?";
-
+    private  static  String SQL_FIND_USER_BY_EMAIL = "select id,first_name, last_name, email , password  from users where email= ? ";
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Override
@@ -56,6 +57,23 @@ public class UserRepositoryImpl implements  UserRespository{
     public User findUser(Integer userId) {
         return jdbcTemplate.queryForObject(SQL_FIND_BY_ID,new Object[]{userId} , userRowMapper);
 
+    }
+
+    @Override
+    public  User findUserByEmailAndPassword (String email , String password){
+        try {
+            User user = jdbcTemplate.queryForObject(SQL_FIND_USER_BY_EMAIL, new Object[]{email} , userRowMapper);
+            System.out.println(user.getEmail());
+            System.out.println(user.getPassword());
+            System.out.println(password);
+            if(!password.equals(user.getPassword())){
+                throw  new EtAuthException("invalid email/password");
+            }
+            return user;
+        }catch (EmptyResultDataAccessException e){
+            throw  new EtAuthException("invalid email/password");
+
+        }
     }
 
     private RowMapper<User> userRowMapper =((rs, rowNum) -> {
