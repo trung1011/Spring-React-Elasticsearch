@@ -2,6 +2,7 @@ package com.example.demoprojectapi.repositories;
 
 import com.example.demoprojectapi.exceptions.EtAuthException;
 import com.example.demoprojectapi.models.User;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ public class UserRepositoryImpl implements  UserRespository{
     JdbcTemplate jdbcTemplate;
     @Override
     public Integer createUser(String firstName, String lastName, String email, String password) throws EtAuthException {
+        String hashPassword  = BCrypt.hashpw(password , BCrypt.gensalt(10));
         try {
             System.out.println(firstName);
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -32,7 +34,7 @@ public class UserRepositoryImpl implements  UserRespository{
                 statement.setString(1, firstName);
                 statement.setString(2, lastName);
                 statement.setString(3, email);
-                statement.setString(4, password);
+                statement.setString(4, hashPassword);
                 System.out.println(statement);
                 return statement;
 
@@ -66,7 +68,7 @@ public class UserRepositoryImpl implements  UserRespository{
             System.out.println(user.getEmail());
             System.out.println(user.getPassword());
             System.out.println(password);
-            if(!password.equals(user.getPassword())){
+            if(!BCrypt.checkpw(password , user.getPassword())){
                 throw  new EtAuthException("invalid email/password");
             }
             return user;
