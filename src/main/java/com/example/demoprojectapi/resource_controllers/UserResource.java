@@ -1,10 +1,9 @@
-package com.example.demoprojectapi.controllers;
+package com.example.demoprojectapi.resource_controllers;
 
 import com.example.demoprojectapi.Constants;
 import com.example.demoprojectapi.models.User;
 import com.example.demoprojectapi.services.UserServices;
 
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +37,8 @@ public class UserResource {
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> resgisterUser (@RequestBody Map<String, Object> userMap){
         String firstName = (String) userMap.get("firstName");
-        System.out.println(userMap);
-        System.out.println(firstName);
+        // System.out.println(userMap);
+        // System.out.println(firstName);
         String lastName = (String) userMap.get("lastName");
         String email = (String) userMap.get("email");
         String password = (String) userMap.get("password");
